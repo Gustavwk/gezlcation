@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docker:up": "docker compose up --build --detach",
+    "docker:down": "docker compose down",
+    "docker:restart": "docker compose down && docker compose up --build --detach",
+    "docker:logs": "docker compose logs --follow"
   },
   "dependencies": {
     "react": "^19.0.0",
