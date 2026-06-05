@@ -9,7 +9,8 @@
 }
 
 .dayHeader {
-  @apply text-xs font-medium text-gray-400 text-center py-0.5 select-none;
+  @apply text-xs font-medium text-center py-0.5 select-none;
+  color: #7a9ab8;
 }
 
 .cell {
@@ -20,10 +21,21 @@
   @apply rounded py-1.5;
 }
 
-/* Day type colours */
-.vacation { @apply bg-rose-400   text-white;      }
-.holiday  { @apply bg-emerald-500 text-white;     }
-.weekend  { @apply bg-slate-100  text-slate-500;  }
+/* Day type colours — drawn from the brand palette */
+.vacation {
+  background-color: var(--color-glow);
+  color: #7c3a00;
+}
+
+.holiday {
+  background-color: var(--color-haze);
+  color: #1a3a5c;
+}
+
+.weekend {
+  background-color: #e8edf2;
+  color: #8a9ab0;
+}
 
 .cellNum {
   @apply text-xs font-semibold leading-none;
@@ -39,5 +51,6 @@
 }
 
 .legendLabel {
-  @apply text-xs text-gray-500;
+  @apply text-xs;
+  color: #7a9ab8;
 }

@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+:root {
+  --color-haze:  #C6E7FF;
+  --color-mist:  #D4F6FF;
+  --color-paper: #FBFBFB;
+  --color-glow:  #FFDDAE;
+}

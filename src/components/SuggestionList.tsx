@@ -4,12 +4,13 @@ import styles from './SuggestionList.module.css';
 
 type Props = {
   periods: Period[];
+  title: string;
 };
 
-export default function SuggestionList({ periods }: Props) {
+export default function SuggestionList({ periods, title }: Props) {
   return (
     <section>
-      <h2 className={styles.heading}>Top {periods.length} ferieperioder</h2>
+      <h2 className={styles.heading}>{title}</h2>
       <div className={styles.grid}>
         {periods.map((period, i) => (
           <SuggestionCard

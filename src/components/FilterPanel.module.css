@@ -1,0 +1,85 @@
+@reference "tailwindcss";
+
+.panel {
+  @apply rounded-2xl p-6;
+  background-color: var(--color-mist);
+}
+
+.heading {
+  @apply text-lg font-bold mb-1;
+  color: #1a3a5c;
+}
+
+.description {
+  @apply text-sm mb-5;
+  color: #4a6a8c;
+}
+
+.form {
+  @apply flex flex-col gap-4;
+}
+
+.fields {
+  @apply flex flex-wrap gap-4;
+}
+
+.field {
+  @apply flex flex-col gap-1 min-w-36;
+}
+
+.label {
+  @apply text-xs font-semibold uppercase tracking-wide;
+  color: #4a6a8c;
+}
+
+.input {
+  @apply px-3 py-2 rounded-xl text-sm font-medium border-2 bg-white focus:outline-none transition-colors;
+  border-color: var(--color-haze);
+  color: #1a3a5c;
+}
+
+.input:focus {
+  border-color: #8cc8ff;
+}
+
+.budgetRow {
+  @apply flex items-center gap-2;
+}
+
+.budgetInput {
+  @apply w-20;
+}
+
+.budgetUnit {
+  @apply text-sm;
+  color: #4a6a8c;
+}
+
+.actions {
+  @apply flex gap-3 items-center flex-wrap;
+}
+
+.submitButton {
+  @apply px-5 py-2 rounded-xl text-sm font-semibold transition-colors;
+  background-color: var(--color-haze);
+  color: #1a3a5c;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #aad5ff;
+}
+
+.submitButton:disabled {
+  @apply opacity-40 cursor-not-allowed;
+}
+
+.clearButton {
+  @apply px-4 py-2 rounded-xl text-sm font-medium border-2 transition-colors bg-transparent;
+  border-color: var(--color-haze);
+  color: #4a6a8c;
+}
+
+.clearButton:hover {
+  background-color: var(--color-haze);
+  color: #1a3a5c;
+}

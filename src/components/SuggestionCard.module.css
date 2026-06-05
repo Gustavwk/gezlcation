@@ -3,13 +3,14 @@
 /* Base card */
 .card {
   @apply rounded-2xl border-2 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-4;
+  background-color: var(--color-paper);
 }
 
-/* Card colour variants by rank */
-.cardGold   { @apply border-yellow-400 bg-yellow-50; }
-.cardSilver { @apply border-gray-400   bg-gray-50;   }
-.cardBronze { @apply border-orange-400 bg-orange-50; }
-.cardOther  { @apply border-indigo-200 bg-white;     }
+/* Card border variants by rank */
+.cardGold   { border-color: var(--color-glow); }
+.cardSilver { border-color: var(--color-haze); }
+.cardBronze { border-color: var(--color-mist); }
+.cardOther  { border-color: #dde8f0;           }
 
 /* Header row */
 .cardHeader {
@@ -20,22 +21,24 @@
   @apply flex items-center gap-3 flex-wrap;
 }
 
-/* Rank badge — replaces emoji */
+/* Rank badge */
 .rankBadge {
   @apply inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold shrink-0;
 }
 
-.rankBadgeGold   { @apply bg-yellow-400 text-yellow-900; }
-.rankBadgeSilver { @apply bg-gray-300   text-gray-700;   }
-.rankBadgeBronze { @apply bg-orange-300 text-orange-900; }
-.rankBadgeOther  { @apply bg-indigo-100 text-indigo-600; }
+.rankBadgeGold   { background-color: var(--color-glow); color: #7c3a00; }
+.rankBadgeSilver { background-color: var(--color-haze); color: #1a3a5c; }
+.rankBadgeBronze { background-color: var(--color-mist); color: #1a4a60; }
+.rankBadgeOther  { @apply bg-slate-100 text-slate-500; }
 
 .totalDays {
-  @apply text-4xl font-bold text-indigo-900 tabular-nums leading-none;
+  @apply text-4xl font-bold tabular-nums leading-none;
+  color: #1a3a5c;
 }
 
 .totalLabel {
-  @apply text-base font-medium text-indigo-700;
+  @apply text-base font-medium;
+  color: #4a6a8c;
 }
 
 /* ROI badge */
@@ -43,23 +46,26 @@
   @apply shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold;
 }
 
-.roiBadgeGold   { @apply bg-yellow-100 text-yellow-800; }
-.roiBadgeSilver { @apply bg-gray-100   text-gray-700;   }
-.roiBadgeBronze { @apply bg-orange-100 text-orange-800; }
-.roiBadgeOther  { @apply bg-indigo-100 text-indigo-700; }
+.roiBadgeGold   { background-color: var(--color-glow); color: #7c3a00; }
+.roiBadgeSilver { background-color: var(--color-haze); color: #1a3a5c; }
+.roiBadgeBronze { background-color: var(--color-mist); color: #1a4a60; }
+.roiBadgeOther  { @apply bg-slate-100 text-slate-500; }
 
 /* Date range subtitle */
 .dateRange {
-  @apply text-sm text-gray-500 -mt-2;
+  @apply text-sm -mt-2;
+  color: #7a9ab8;
 }
 
 /* Vacation days list */
 .vacationSection {
-  @apply border-t border-black/5 pt-4;
+  @apply border-t pt-4;
+  border-color: #e0eaf2;
 }
 
 .vacationLabel {
-  @apply text-sm font-semibold text-gray-700 mb-2;
+  @apply text-sm font-semibold mb-2;
+  color: #4a6a8c;
 }
 
 .vacationList {
@@ -67,9 +73,12 @@
 }
 
 .vacationItem {
-  @apply flex items-center gap-2 text-sm text-gray-800;
+  @apply flex items-center gap-2 text-sm;
+  color: #2a4a6c;
 }
 
 .vacationDot {
-  @apply w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0;
+  @apply w-1.5 h-1.5 rounded-full shrink-0;
+  background-color: var(--color-glow);
+  outline: 1px solid #c4780040;
 }
