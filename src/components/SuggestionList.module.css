@@ -1,7 +1,13 @@
 @reference "tailwindcss";
 
 .heading {
-  @apply text-lg font-semibold text-indigo-800 mb-6;
+  @apply text-lg font-bold mb-2;
+  color: #1a3a5c;
+}
+
+.subtitle {
+  @apply text-sm mb-6;
+  color: #4a6a8c;
 }
 
 .grid {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Country, Day, Period, VacationFilter } from './types';
 import { fetchCountries, fetchHolidays } from './data/holidays';
 import { buildCalendar } from './lib/calendar';
-import { findBestPeriods } from './lib/optimizer';
+import { findBestPeriods, findVacationPlan } from './lib/optimizer';
 import CountrySelect from './components/CountrySelect';
 import YearSelect from './components/YearSelect';
 import FilterPanel from './components/FilterPanel';
@@ -12,6 +12,17 @@ import styles from './App.module.css';
 const CURRENT_YEAR = new Date().getFullYear();
 
 type Status = 'idle' | 'loading' | 'done' | 'error';
+
+function planSubtitle(plan: Period[], budget: number): string {
+  const used = plan.reduce((s, p) => s + p.requiredVacationDays, 0);
+  const free = plan.reduce((s, p) => s + p.totalDays, 0);
+  const unused = budget - used;
+  const trips = plan.length;
+  const base = `${used} af ${budget} feriedage brugt — ${free} fri dage fordelt på ${trips} periode${trips !== 1 ? 'r' : ''}`;
+  return unused > 0
+    ? `${base} · ${unused} feriedag${unused !== 1 ? 'e' : ''} bruges bedst udenfor den valgte periode`
+    : base;
+}
 
 export default function App() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -23,13 +34,13 @@ export default function App() {
   const [status, setStatus] = useState<Status>('idle');
 
   const [filter, setFilter] = useState<VacationFilter | null>(null);
+  const [vacationPlan, setVacationPlan] = useState<Period[]>([]);
   const [filteredPeriods, setFilteredPeriods] = useState<Period[]>([]);
 
   useEffect(() => {
     fetchCountries().then(setCountries);
   }, []);
 
-  // Fetch holidays and compute default top 3 whenever country/year changes
   useEffect(() => {
     setStatus('loading');
     setCalendar([]);
@@ -43,29 +54,20 @@ export default function App() {
       .catch(() => setStatus('error'));
   }, [country, year]);
 
-  // Recompute filtered results whenever the calendar or filter changes
   useEffect(() => {
     if (calendar.length === 0 || !filter) {
+      setVacationPlan([]);
       setFilteredPeriods([]);
       return;
     }
+    setVacationPlan(findVacationPlan(calendar, filter));
     setFilteredPeriods(findBestPeriods(calendar, filter));
   }, [calendar, filter]);
-
-  function handleFilter(f: VacationFilter) {
-    setFilter(f);
-  }
-
-  function handleClearFilter() {
-    setFilter(null);
-    setFilteredPeriods([]);
-  }
 
   return (
     <div className={styles.page}>
       <div className={styles.container}>
 
-        {/* Hero */}
         <header className={styles.hero}>
           <h1 className={styles.title}>Gezel Holiday</h1>
           <p className={styles.subtitle}>Få mest muligt ud af dine feriedage</p>
@@ -75,7 +77,6 @@ export default function App() {
           </div>
         </header>
 
-        {/* Loading / error feedback */}
         {status === 'loading' && (
           <div className={styles.loading}>
             <div className={styles.spinner} />
@@ -91,7 +92,6 @@ export default function App() {
           </div>
         )}
 
-        {/* Default top 3 */}
         {status === 'done' && periods.length > 0 && (
           <SuggestionList periods={periods} title={`Top 3 ferieperioder i ${year}`} />
         )}
@@ -102,27 +102,39 @@ export default function App() {
           </div>
         )}
 
-        {/* Filter panel — always visible once data is loaded */}
         {status === 'done' && (
           <FilterPanel
             year={year}
             isActive={filter !== null}
-            onFilter={handleFilter}
-            onClear={handleClearFilter}
+            onFilter={setFilter}
+            onClear={() => setFilter(null)}
           />
         )}
 
-        {/* Filtered results */}
-        {filter !== null && filteredPeriods.length > 0 && (
-          <SuggestionList periods={filteredPeriods} title="Din søgning" />
+        {/* Primary: full vacation plan using the entire budget */}
+        {filter !== null && vacationPlan.length > 0 && (
+          <SuggestionList
+            periods={vacationPlan}
+            title="Din ferieplan"
+            subtitle={planSubtitle(vacationPlan, filter.budget)}
+          />
         )}
 
-        {filter !== null && filteredPeriods.length === 0 && (
+        {filter !== null && vacationPlan.length === 0 && (
           <div className={styles.feedback}>
             <p className={styles.emptyMessage}>
-              Ingen perioder fundet i den valgte periode med {filter.budget} feriedag{filter.budget !== 1 ? 'e' : ''}.
+              Ingen gode perioder fundet i den valgte periode — prøv et bredere datointerval.
             </p>
           </div>
+        )}
+
+        {/* Secondary: top 3 single-period picks by ROI */}
+        {filter !== null && filteredPeriods.length > 0 && (
+          <SuggestionList
+            periods={filteredPeriods}
+            title="Bedste enkeltperioder"
+            subtitle="De tre perioder med bedst ROI inden for din søgning."
+          />
         )}
 
       </div>
