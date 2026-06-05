@@ -1,18 +1,22 @@
 import { parseLocalDate } from '../lib/calendar';
 import type { Period } from '../types';
+import styles from './SuggestionCard.module.css';
 
 type Props = {
   period: Period;
   rank: number;
 };
 
-const RANK_CONFIG = [
-  { icon: '🏆', border: 'border-yellow-400', bg: 'bg-yellow-50', badge: 'bg-yellow-100 text-yellow-800' },
-  { icon: '🥈', border: 'border-gray-400',   bg: 'bg-gray-50',   badge: 'bg-gray-100 text-gray-700'   },
-  { icon: '🥉', border: 'border-orange-400', bg: 'bg-orange-50', badge: 'bg-orange-100 text-orange-800' },
-] as const;
+type Variant = 'Gold' | 'Silver' | 'Bronze' | 'Other';
 
-const DEFAULT_CONFIG = { icon: '', border: 'border-indigo-200', bg: 'bg-white', badge: 'bg-indigo-100 text-indigo-700' };
+const RANK_ICONS = ['🏆', '🥈', '🥉'] as const;
+
+function rankVariant(rank: number): Variant {
+  if (rank === 1) return 'Gold';
+  if (rank === 2) return 'Silver';
+  if (rank === 3) return 'Bronze';
+  return 'Other';
+}
 
 function formatDay(dateStr: string): string {
   return parseLocalDate(dateStr).toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
@@ -25,47 +29,43 @@ function formatRange(start: string, end: string): string {
 }
 
 export default function SuggestionCard({ period, rank }: Props) {
-  const cfg = rank <= 3 ? RANK_CONFIG[rank - 1] : DEFAULT_CONFIG;
+  const variant = rankVariant(rank);
+  const icon = rank <= 3 ? RANK_ICONS[rank - 1] : '';
   const vacDays = period.requiredVacationDays;
 
   return (
-    <div className={`rounded-2xl border-2 ${cfg.border} ${cfg.bg} p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-4`}>
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-baseline gap-2 flex-wrap">
-          {cfg.icon && <span className="text-2xl leading-none">{cfg.icon}</span>}
-          {!cfg.icon && (
-            <span className="text-sm font-bold text-indigo-400 tabular-nums">#{rank}</span>
-          )}
-          <span className="text-4xl font-bold text-indigo-900 tabular-nums leading-none">
-            {period.totalDays}
-          </span>
-          <span className="text-base font-medium text-indigo-700">
-            sammenhængende fridage
-          </span>
+    <div className={`${styles.card} ${styles[`card${variant}`]}`}>
+
+      <div className={styles.cardHeader}>
+        <div className={styles.titleGroup}>
+          {icon
+            ? <span className={styles.rankIcon}>{icon}</span>
+            : <span className={styles.rankNumber}>#{rank}</span>
+          }
+          <span className={styles.totalDays}>{period.totalDays}</span>
+          <span className={styles.totalLabel}>sammenhængende fridage</span>
         </div>
-        <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${cfg.badge}`}>
+        <span className={`${styles.roiBadge} ${styles[`roiBadge${variant}`]}`}>
           {period.roi.toFixed(1)}×
         </span>
       </div>
 
-      {/* Date range */}
-      <p className="text-sm text-gray-500 -mt-2">{formatRange(period.start, period.end)}</p>
+      <p className={styles.dateRange}>{formatRange(period.start, period.end)}</p>
 
-      {/* Vacation days list */}
-      <div className="border-t border-black/5 pt-4">
-        <p className="text-sm font-semibold text-gray-700 mb-2">
+      <div className={styles.vacationSection}>
+        <p className={styles.vacationLabel}>
           Brug {vacDays} feriedag{vacDays !== 1 ? 'e' : ''} fri:
         </p>
-        <ul className="space-y-1.5">
+        <ul className={styles.vacationList}>
           {period.vacationDates.map((date) => (
-            <li key={date} className="flex items-center gap-2 text-sm text-gray-800">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />
+            <li key={date} className={styles.vacationItem}>
+              <span className={styles.vacationDot} />
               {formatDay(date)}
             </li>
           ))}
         </ul>
       </div>
+
     </div>
   );
 }

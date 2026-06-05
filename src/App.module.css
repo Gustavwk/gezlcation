@@ -1,0 +1,49 @@
+@reference "tailwindcss";
+
+.page {
+  @apply min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50;
+}
+
+.container {
+  @apply max-w-6xl mx-auto px-4 py-12;
+}
+
+.header {
+  @apply text-center mb-12;
+}
+
+.title {
+  @apply text-5xl font-extrabold text-indigo-900 tracking-tight mb-3;
+}
+
+.subtitle {
+  @apply text-xl text-indigo-500 font-light;
+}
+
+.controls {
+  @apply flex flex-wrap gap-4 justify-center mb-12;
+}
+
+.loading {
+  @apply flex flex-col items-center gap-4 py-20 text-indigo-400;
+}
+
+.spinner {
+  @apply w-10 h-10 border-4 border-current border-t-transparent rounded-full animate-spin;
+}
+
+.loadingText {
+  @apply text-sm;
+}
+
+.feedback {
+  @apply text-center py-20;
+}
+
+.errorMessage {
+  @apply text-red-500 font-medium;
+}
+
+.emptyMessage {
+  @apply text-gray-400;
+}

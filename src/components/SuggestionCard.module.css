@@ -1,0 +1,73 @@
+@reference "tailwindcss";
+
+/* Base card */
+.card {
+  @apply rounded-2xl border-2 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-4;
+}
+
+/* Card colour variants by rank */
+.cardGold   { @apply border-yellow-400 bg-yellow-50; }
+.cardSilver { @apply border-gray-400   bg-gray-50;   }
+.cardBronze { @apply border-orange-400 bg-orange-50; }
+.cardOther  { @apply border-indigo-200 bg-white;     }
+
+/* Header row */
+.cardHeader {
+  @apply flex items-start justify-between gap-2;
+}
+
+.titleGroup {
+  @apply flex items-baseline gap-2 flex-wrap;
+}
+
+.rankIcon {
+  @apply text-2xl leading-none;
+}
+
+.rankNumber {
+  @apply text-sm font-bold text-indigo-400 tabular-nums;
+}
+
+.totalDays {
+  @apply text-4xl font-bold text-indigo-900 tabular-nums leading-none;
+}
+
+.totalLabel {
+  @apply text-base font-medium text-indigo-700;
+}
+
+/* ROI badge */
+.roiBadge {
+  @apply shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold;
+}
+
+.roiBadgeGold   { @apply bg-yellow-100 text-yellow-800; }
+.roiBadgeSilver { @apply bg-gray-100   text-gray-700;   }
+.roiBadgeBronze { @apply bg-orange-100 text-orange-800; }
+.roiBadgeOther  { @apply bg-indigo-100 text-indigo-700; }
+
+/* Date range subtitle */
+.dateRange {
+  @apply text-sm text-gray-500 -mt-2;
+}
+
+/* Vacation days section */
+.vacationSection {
+  @apply border-t border-black/5 pt-4;
+}
+
+.vacationLabel {
+  @apply text-sm font-semibold text-gray-700 mb-2;
+}
+
+.vacationList {
+  @apply space-y-1.5;
+}
+
+.vacationItem {
+  @apply flex items-center gap-2 text-sm text-gray-800;
+}
+
+.vacationDot {
+  @apply w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0;
+}
