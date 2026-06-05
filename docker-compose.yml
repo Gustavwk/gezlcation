@@ -1,6 +1,18 @@
 services:
   app:
     build: .
-    ports:
-      - "3000:80"
     restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gezlcation.rule=Host(`gezlcation.dk`)
+      - traefik.http.routers.gezlcation.entrypoints=websecure
+      - traefik.http.routers.gezlcation.tls=true
+      - traefik.http.routers.gezlcation.tls.certresolver=le
+      - traefik.http.services.gezlcation.loadbalancer.server.port=80
+    networks:
+      - traefik_net
+
+networks:
+  traefik_net:
+    external: true
+    name: gezlnomics_default
