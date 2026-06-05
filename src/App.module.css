@@ -9,10 +9,10 @@
   @apply max-w-6xl mx-auto px-4 py-12 flex flex-col gap-12;
 }
 
-/* Hero header */
-.hero {
-  @apply rounded-2xl px-8 py-10 text-center;
-  background-color: var(--color-haze);
+
+.headerImage {
+  @apply block w-full;
+  height: auto;
 }
 
 .title {
@@ -36,7 +36,7 @@
 }
 
 .spinner {
-  @apply w-10 h-10 border-4 border-current border-t-transparent rounded-full animate-spin;
+  @apply w-10 h-10 border-4 border-current border-t-transparent animate-spin;
 }
 
 .loadingText {
@@ -54,4 +54,15 @@
 
 .emptyMessage {
   color: #a0b8cc;
+}
+
+.footer {
+  @apply flex flex-col items-center gap-1 py-8 text-xs text-center;
+  color: #a0b8cc;
+  border-top: 1px solid #e0eaf2;
+}
+
+.footerLink {
+  color: #7a9ab8;
+  text-decoration: underline;
 }

@@ -1,7 +1,11 @@
 @reference "tailwindcss";
 
+.headingRow {
+  @apply flex items-center justify-between mb-2;
+}
+
 .heading {
-  @apply text-lg font-bold mb-2;
+  @apply text-lg font-bold;
   color: #1a3a5c;
 }
 
@@ -12,4 +16,8 @@
 
 .grid {
   @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5;
+}
+
+.gridSingle {
+  @apply grid grid-cols-1 gap-5;
 }

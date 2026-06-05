@@ -2,7 +2,7 @@
 
 /* Base card */
 .card {
-  @apply rounded-2xl border-2 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-4;
+  @apply border-2 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-4;
   background-color: var(--color-paper);
 }
 
@@ -23,7 +23,7 @@
 
 /* Rank badge */
 .rankBadge {
-  @apply inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold shrink-0;
+  @apply inline-flex items-center justify-center w-8 h-8 text-sm font-bold shrink-0;
 }
 
 .rankBadgeGold   { background-color: var(--color-glow); color: #7c3a00; }
@@ -32,8 +32,13 @@
 .rankBadgeOther  { @apply bg-slate-100 text-slate-500; }
 
 .totalDays {
-  @apply text-4xl font-bold tabular-nums leading-none;
+  @apply text-4xl font-bold tabular-nums leading-none flex items-baseline gap-1.5;
   color: #1a3a5c;
+}
+
+.totalUnit {
+  @apply text-base font-medium;
+  color: #4a6a8c;
 }
 
 .totalLabel {
@@ -43,7 +48,7 @@
 
 /* ROI badge */
 .roiBadge {
-  @apply shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold;
+  @apply shrink-0 px-2.5 py-1 text-xs font-semibold;
 }
 
 .roiBadgeGold   { background-color: var(--color-glow); color: #7c3a00; }
@@ -57,28 +62,3 @@
   color: #7a9ab8;
 }
 
-/* Vacation days list */
-.vacationSection {
-  @apply border-t pt-4;
-  border-color: #e0eaf2;
-}
-
-.vacationLabel {
-  @apply text-sm font-semibold mb-2;
-  color: #4a6a8c;
-}
-
-.vacationList {
-  @apply space-y-1.5;
-}
-
-.vacationItem {
-  @apply flex items-center gap-2 text-sm;
-  color: #2a4a6c;
-}
-
-.vacationDot {
-  @apply w-1.5 h-1.5 rounded-full shrink-0;
-  background-color: var(--color-glow);
-  outline: 1px solid #c4780040;
-}

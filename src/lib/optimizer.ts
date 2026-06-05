@@ -4,9 +4,8 @@ const MAX_VACATION_DAYS = 20;
 const TOP_N = 3;
 
 /**
- * Finds the top 3 vacation periods by enumerating all contiguous intervals.
- * For each start i, extend j until we've consumed MAX_VACATION_DAYS workdays.
- * Track the best period (most total days) per vacation-day count, sort by ROI.
+ * Finds the top 3 periods that include at least one public holiday, sorted by ROI.
+ * Pure weekend extensions (no holidays) are intentionally excluded as trivial.
  */
 export function findBestPeriods(days: Day[], filter?: VacationFilter): Period[] {
   const maxVac = filter?.budget ?? MAX_VACATION_DAYS;
@@ -18,11 +17,14 @@ export function findBestPeriods(days: Day[], filter?: VacationFilter): Period[] 
 
   for (let i = startIdx; i <= endIdx; i++) {
     let vacationCount = 0;
+    let holidayCount = 0;
     for (let j = i; j <= endIdx; j++) {
       const day = days[j];
       if (!day.isWeekend && !day.isHoliday) vacationCount++;
+      if (day.isHoliday) holidayCount++;
       if (vacationCount > maxVac) break;
       if (vacationCount === 0) continue;
+      if (holidayCount === 0) continue; // skip trivial weekend-extension periods
 
       const totalDays = j - i + 1;
       const existing = best.get(vacationCount);
@@ -47,99 +49,64 @@ export function findBestPeriods(days: Day[], filter?: VacationFilter): Period[] 
 }
 
 /**
- * Greedy vacation planner: iteratively picks the highest-ROI period from the
- * remaining calendar until the vacation budget is exhausted.
- *
- * Each selected period splits the available window into two non-overlapping
- * segments, preventing double-counting of days.
- *
- * Returns periods sorted chronologically — ready to render as a travel plan.
+ * Finds the single contiguous period that maximises total calendar days
+ * while using at most filter.budget vacation days.
+ * This is the one answer to "how do I get the longest possible holiday?"
  */
-export function findVacationPlan(days: Day[], filter: VacationFilter): Period[] {
+export function findBestVacation(days: Day[], filter: VacationFilter): Period | null {
   const startIdx = resolveStart(days, filter.from);
   const endIdx = resolveEnd(days, filter.to);
-  if (startIdx === -1 || endIdx === -1 || startIdx > endIdx) return [];
+  if (startIdx === -1 || endIdx === -1 || startIdx > endIdx) return null;
 
-  const plan: Period[] = [];
-  let remaining = filter.budget;
-  let segments: [number, number][] = [[startIdx, endIdx]];
+  let best: Period | null = null;
 
-  while (remaining > 0 && segments.length > 0) {
-    let best: SegmentBest | null = null;
-    let bestSegIdx = -1;
+  for (let i = startIdx; i <= endIdx; i++) {
+    let vacationCount = 0;
+    let lastJ = -1;
+    let lastVacCount = 0;
 
-    for (let si = 0; si < segments.length; si++) {
-      const [s, e] = segments[si];
-      const candidate = bestInSegment(days, s, e, remaining);
-      if (candidate && (!best || candidate.period.roi > best.period.roi ||
-          (candidate.period.roi === best.period.roi &&
-           candidate.period.totalDays > best.period.totalDays))) {
-        best = candidate;
-        bestSegIdx = si;
-      }
+    for (let j = i; j <= endIdx; j++) {
+      const day = days[j];
+      if (!day.isWeekend && !day.isHoliday) vacationCount++;
+      if (vacationCount > filter.budget) break;
+      lastJ = j;
+      lastVacCount = vacationCount;
     }
 
-    if (!best) break;
+    if (lastJ === -1 || lastVacCount === 0) continue;
 
-    plan.push(best.period);
-    remaining -= best.period.requiredVacationDays;
+    // Extend past filter.to with free days (weekends/holidays) that follow immediately —
+    // this is what lets a Dec vacation naturally wrap into the New Year.
+    let tailJ = lastJ;
+    while (tailJ + 1 < days.length) {
+      const next = days[tailJ + 1];
+      if (!next.isWeekend && !next.isHoliday) break;
+      tailJ++;
+    }
 
-    // Split the chosen segment around the selected period
-    const [segStart, segEnd] = segments[bestSegIdx];
-    const next: [number, number][] = segments.filter((_, i) => i !== bestSegIdx);
-    if (best.startIdx > segStart) next.push([segStart, best.startIdx - 1]);
-    if (best.endIdx < segEnd)     next.push([best.endIdx + 1, segEnd]);
-    segments = next;
+    const totalDays = tailJ - i + 1;
+    if (
+      !best ||
+      totalDays > best.totalDays ||
+      (totalDays === best.totalDays && lastVacCount < best.requiredVacationDays)
+    ) {
+      const { vacationDates, holidayDates } = collectDates(days, i, tailJ);
+      best = {
+        start: days[i].date,
+        end: days[tailJ].date,
+        totalDays,
+        requiredVacationDays: lastVacCount,
+        roi: totalDays / lastVacCount,
+        vacationDates,
+        holidayDates,
+      };
+    }
   }
 
-  return plan.sort((a, b) => a.start.localeCompare(b.start));
+  return best;
 }
 
 // ─── helpers ────────────────────────────────────────────────────────────────
-
-type SegmentBest = { period: Period; startIdx: number; endIdx: number };
-
-function bestInSegment(
-  days: Day[],
-  segStart: number,
-  segEnd: number,
-  maxVac: number,
-): SegmentBest | null {
-  const best = new Map<number, SegmentBest>();
-
-  for (let i = segStart; i <= segEnd; i++) {
-    let vacationCount = 0;
-    for (let j = i; j <= segEnd; j++) {
-      const day = days[j];
-      if (!day.isWeekend && !day.isHoliday) vacationCount++;
-      if (vacationCount > maxVac) break;
-      if (vacationCount === 0) continue;
-
-      const totalDays = j - i + 1;
-      const existing = best.get(vacationCount);
-      if (!existing || totalDays > existing.period.totalDays) {
-        const { vacationDates, holidayDates } = collectDates(days, i, j);
-        best.set(vacationCount, {
-          period: {
-            start: days[i].date,
-            end: days[j].date,
-            totalDays,
-            requiredVacationDays: vacationCount,
-            roi: totalDays / vacationCount,
-            vacationDates,
-            holidayDates,
-          },
-          startIdx: i,
-          endIdx: j,
-        });
-      }
-    }
-  }
-
-  if (best.size === 0) return null;
-  return Array.from(best.values())
-    .sort((a, b) => b.period.roi - a.period.roi || b.period.totalDays - a.period.totalDays)[0];
-}
 
 function collectDates(
   days: Day[],

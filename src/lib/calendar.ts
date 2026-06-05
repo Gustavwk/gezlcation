@@ -5,7 +5,8 @@ export function buildCalendar(year: number, holidayDates: string[]): Day[] {
   const days: Day[] = [];
 
   const cursor = new Date(year, 0, 1);
-  while (cursor.getFullYear() === year) {
+  const end = new Date(year + 1, 0, 31); // include Jan of next year for cross-year periods
+  while (cursor <= end) {
     const dateStr = toISODate(cursor);
     const dow = cursor.getDay();
     days.push({

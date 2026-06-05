@@ -4,13 +4,23 @@
   @apply flex flex-col gap-1;
 }
 
+.wrapperSubtle {
+  @apply flex items-center;
+}
+
+.selectSubtle {
+  @apply text-sm cursor-pointer bg-transparent border-0 focus:outline-none;
+  color: #7a9ab8;
+  appearance: auto;
+}
+
 .label {
   @apply text-xs font-semibold uppercase tracking-wide;
   color: #4a6a8c;
 }
 
 .select {
-  @apply px-4 py-2.5 rounded-xl border-2 bg-white
+  @apply px-4 py-2.5 border-2 bg-white
          font-medium shadow-sm cursor-pointer transition-colors
          focus:outline-none;
   border-color: #8cc8ff;

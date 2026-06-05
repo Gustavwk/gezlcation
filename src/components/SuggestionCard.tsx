@@ -17,10 +17,6 @@ function rankVariant(rank: number): Variant {
   return 'Other';
 }
 
-function formatDay(dateStr: string): string {
-  return parseLocalDate(dateStr).toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
-}
-
 function formatRange(start: string, end: string): string {
   const s = parseLocalDate(start).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
   const e = parseLocalDate(end).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
@@ -29,7 +25,6 @@ function formatRange(start: string, end: string): string {
 
 export default function SuggestionCard({ period, rank }: Props) {
   const variant = rankVariant(rank);
-  const vacDays = period.requiredVacationDays;
 
   return (
     <div className={`${styles.card} ${styles[`card${variant}`]}`}>
@@ -39,8 +34,10 @@ export default function SuggestionCard({ period, rank }: Props) {
           <span className={`${styles.rankBadge} ${styles[`rankBadge${variant}`]}`}>
             #{rank}
           </span>
-          <span className={styles.totalDays}>{period.totalDays}</span>
-          <span className={styles.totalLabel}>sammenhængende fridage</span>
+          <span className={styles.totalDays}>
+            {period.totalDays}
+            <span className={styles.totalUnit}>Fridage</span>
+          </span>
         </div>
         <span className={`${styles.roiBadge} ${styles[`roiBadge${variant}`]}`}>
           {period.roi.toFixed(1)}×
@@ -55,20 +52,6 @@ export default function SuggestionCard({ period, rank }: Props) {
         vacationDates={period.vacationDates}
         holidayDates={period.holidayDates}
       />
-
-      <div className={styles.vacationSection}>
-        <p className={styles.vacationLabel}>
-          Brug {vacDays} feriedag{vacDays !== 1 ? 'e' : ''} fri:
-        </p>
-        <ul className={styles.vacationList}>
-          {period.vacationDates.map((date) => (
-            <li key={date} className={styles.vacationItem}>
-              <span className={styles.vacationDot} />
-              {formatDay(date)}
-            </li>
-          ))}
-        </ul>
-      </div>
 
     </div>
   );

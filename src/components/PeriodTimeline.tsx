@@ -1,7 +1,7 @@
 import { parseLocalDate, toISODate } from '../lib/calendar';
 import styles from './PeriodTimeline.module.css';
 
-type DayType = 'vacation' | 'holiday' | 'weekend';
+type DayType = 'vacation' | 'holiday' | 'weekend' | 'outside';
 
 type DayEntry = {
   date: string;
@@ -16,7 +16,6 @@ type Props = {
   holidayDates: string[];
 };
 
-// Monday-first week headers (Danish)
 const WEEK_HEADERS = ['Ma', 'Ti', 'On', 'To', 'Fr', 'Lø', 'Sø'];
 
 function buildDays(start: string, end: string, vacSet: Set<string>, holSet: Set<string>): DayEntry[] {
@@ -36,17 +35,36 @@ function buildDays(start: string, end: string, vacSet: Set<string>, holSet: Set<
   return entries;
 }
 
-function toWeekRows(entries: DayEntry[]): (DayEntry | null)[][] {
+function toWeekRows(entries: DayEntry[]): DayEntry[][] {
   if (entries.length === 0) return [];
-  // Convert JS Sunday=0 to Monday=0 offset
-  const firstDow = (parseLocalDate(entries[0].date).getDay() + 6) % 7;
-  const padded: (DayEntry | null)[] = [...Array(firstDow).fill(null), ...entries];
-  const rem = padded.length % 7;
-  if (rem > 0) padded.push(...Array(7 - rem).fill(null));
 
-  const rows: (DayEntry | null)[][] = [];
-  for (let i = 0; i < padded.length; i += 7) {
-    rows.push(padded.slice(i, i + 7) as (DayEntry | null)[]);
+  const firstDow = (parseLocalDate(entries[0].date).getDay() + 6) % 7;
+
+  // Pre-padding: days before the period start to fill the first week row
+  const prePad: DayEntry[] = [];
+  const startDate = parseLocalDate(entries[0].date);
+  for (let i = firstDow; i > 0; i--) {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() - i);
+    prePad.push({ date: toISODate(d), num: d.getDate(), type: 'outside' });
+  }
+
+  const all = [...prePad, ...entries];
+  const rem = all.length % 7;
+
+  // Post-padding: days after the period end to fill the last week row
+  if (rem > 0) {
+    const lastDate = parseLocalDate(all[all.length - 1].date);
+    for (let i = 1; i <= 7 - rem; i++) {
+      const d = new Date(lastDate);
+      d.setDate(d.getDate() + i);
+      all.push({ date: toISODate(d), num: d.getDate(), type: 'outside' });
+    }
+  }
+
+  const rows: DayEntry[][] = [];
+  for (let i = 0; i < all.length; i += 7) {
+    rows.push(all.slice(i, i + 7));
   }
   return rows;
 }
@@ -66,15 +84,11 @@ export default function PeriodTimeline({ start, end, vacationDates, holidayDates
 
       {rows.map((row, ri) => (
         <div key={ri} className={styles.grid}>
-          {row.map((day, di) =>
-            day ? (
-              <div key={day.date} className={`${styles.cell} ${styles[day.type]}`}>
-                <span className={styles.cellNum}>{day.num}</span>
-              </div>
-            ) : (
-              <div key={`pad-${ri}-${di}`} className={styles.emptyCell} />
-            )
-          )}
+          {row.map((day) => (
+            <div key={day.date} className={`${styles.cell} ${styles[day.type]}`}>
+              <span className={styles.cellNum}>{day.num}</span>
+            </div>
+          ))}
         </div>
       ))}
 
@@ -85,6 +99,8 @@ export default function PeriodTimeline({ start, end, vacationDates, holidayDates
         <span className={styles.legendLabel}>Helligdag</span>
         <span className={`${styles.legendSwatch} ${styles.weekend}`} />
         <span className={styles.legendLabel}>Weekend</span>
+        <span className={`${styles.legendSwatch} ${styles.outside}`} />
+        <span className={styles.legendLabel}>Hverdag</span>
       </div>
     </div>
   );

@@ -26,6 +26,15 @@ export default function FilterPanel({ year, isActive, onFilter, onClear }: Props
     if (isValid) onFilter({ from, to, budget });
   }
 
+  function planRestOfYear() {
+    const today = new Date();
+    const f = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const t = `${year}-12-31`;
+    setFrom(f);
+    setTo(t);
+    onFilter({ from: f, to: t, budget });
+  }
+
   return (
     <div className={styles.panel}>
       <h3 className={styles.heading}>Planlæg din ferie</h3>
@@ -83,6 +92,9 @@ export default function FilterPanel({ year, isActive, onFilter, onClear }: Props
         <div className={styles.actions}>
           <button type="submit" disabled={!isValid} className={styles.submitButton}>
             Find perioder
+          </button>
+          <button type="button" onClick={planRestOfYear} className={styles.quickButton}>
+            Fra i dag til årets slut
           </button>
           {isActive && (
             <button type="button" onClick={onClear} className={styles.clearButton}>

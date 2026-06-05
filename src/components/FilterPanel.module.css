@@ -1,7 +1,7 @@
 @reference "tailwindcss";
 
 .panel {
-  @apply rounded-2xl p-6;
+  @apply p-6;
   background-color: var(--color-mist);
 }
 
@@ -33,9 +33,10 @@
 }
 
 .input {
-  @apply px-3 py-2 rounded-xl text-sm font-medium border-2 bg-white focus:outline-none transition-colors;
+  @apply px-3 py-2 text-sm font-medium border-2 bg-white focus:outline-none;
   border-color: var(--color-haze);
   color: #1a3a5c;
+  transition: border-color 0.2s ease;
 }
 
 .input:focus {
@@ -60,26 +61,58 @@
 }
 
 .submitButton {
-  @apply px-5 py-2 rounded-xl text-sm font-semibold transition-colors;
+  @apply px-5 py-2 text-sm font-semibold;
   background-color: var(--color-haze);
   color: #1a3a5c;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .submitButton:hover:not(:disabled) {
   background-color: #aad5ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(100, 180, 255, 0.35);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: translateY(0px);
+  box-shadow: none;
 }
 
 .submitButton:disabled {
   @apply opacity-40 cursor-not-allowed;
 }
 
+.quickButton {
+  @apply px-4 py-2 text-sm font-medium border-2 bg-transparent;
+  border-color: var(--color-glow);
+  color: #7c3a00;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.quickButton:hover {
+  background-color: var(--color-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 180, 50, 0.35);
+}
+
+.quickButton:active {
+  transform: translateY(0px);
+  box-shadow: none;
+}
+
 .clearButton {
-  @apply px-4 py-2 rounded-xl text-sm font-medium border-2 transition-colors bg-transparent;
+  @apply px-4 py-2 text-sm font-medium border-2 bg-transparent;
   border-color: var(--color-haze);
   color: #4a6a8c;
+  transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
 .clearButton:hover {
   background-color: var(--color-haze);
   color: #1a3a5c;
+  transform: translateY(-2px);
+}
+
+.clearButton:active {
+  transform: translateY(0px);
 }
