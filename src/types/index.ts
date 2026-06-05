@@ -11,6 +11,7 @@ export type Period = {
   requiredVacationDays: number;
   roi: number;
   vacationDates: string[];
+  holidayDates: string[];
 };
 
 export type Country = {

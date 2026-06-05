@@ -14,7 +14,6 @@ const TOP_N = 10;
  */
 export function findBestPeriods(days: Day[]): Period[] {
   const n = days.length;
-  // best[k] = the period with most total days that costs exactly k vacation days
   const best = new Map<number, Period>();
 
   for (let i = 0; i < n; i++) {
@@ -26,18 +25,20 @@ export function findBestPeriods(days: Day[]): Period[] {
         vacationCount++;
       }
       if (vacationCount > MAX_VACATION_DAYS) break;
-      if (vacationCount === 0) continue; // pure free run — no vacation spent yet
+      if (vacationCount === 0) continue;
 
       const totalDays = j - i + 1;
       const existing = best.get(vacationCount);
       if (!existing || totalDays > existing.totalDays) {
+        const { vacationDates, holidayDates } = collectDates(days, i, j);
         best.set(vacationCount, {
           start: days[i].date,
           end: days[j].date,
           totalDays,
           requiredVacationDays: vacationCount,
           roi: totalDays / vacationCount,
-          vacationDates: collectWorkdays(days, i, j),
+          vacationDates,
+          holidayDates,
         });
       }
     }
@@ -48,12 +49,15 @@ export function findBestPeriods(days: Day[]): Period[] {
     .slice(0, TOP_N);
 }
 
-function collectWorkdays(days: Day[], from: number, to: number): string[] {
-  const result: string[] = [];
+function collectDates(days: Day[], from: number, to: number): { vacationDates: string[]; holidayDates: string[] } {
+  const vacationDates: string[] = [];
+  const holidayDates: string[] = [];
   for (let k = from; k <= to; k++) {
     if (!days[k].isWeekend && !days[k].isHoliday) {
-      result.push(days[k].date);
+      vacationDates.push(days[k].date);
+    } else if (days[k].isHoliday) {
+      holidayDates.push(days[k].date);
     }
   }
-  return result;
+  return { vacationDates, holidayDates };
 }

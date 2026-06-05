@@ -17,16 +17,18 @@
 }
 
 .titleGroup {
-  @apply flex items-baseline gap-2 flex-wrap;
+  @apply flex items-center gap-3 flex-wrap;
 }
 
-.rankIcon {
-  @apply text-2xl leading-none;
+/* Rank badge — replaces emoji */
+.rankBadge {
+  @apply inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold shrink-0;
 }
 
-.rankNumber {
-  @apply text-sm font-bold text-indigo-400 tabular-nums;
-}
+.rankBadgeGold   { @apply bg-yellow-400 text-yellow-900; }
+.rankBadgeSilver { @apply bg-gray-300   text-gray-700;   }
+.rankBadgeBronze { @apply bg-orange-300 text-orange-900; }
+.rankBadgeOther  { @apply bg-indigo-100 text-indigo-600; }
 
 .totalDays {
   @apply text-4xl font-bold text-indigo-900 tabular-nums leading-none;
@@ -51,7 +53,7 @@
   @apply text-sm text-gray-500 -mt-2;
 }
 
-/* Vacation days section */
+/* Vacation days list */
 .vacationSection {
   @apply border-t border-black/5 pt-4;
 }
@@ -69,5 +71,5 @@
 }
 
 .vacationDot {
-  @apply w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0;
+  @apply w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0;
 }

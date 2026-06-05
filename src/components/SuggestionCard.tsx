@@ -1,5 +1,6 @@
 import { parseLocalDate } from '../lib/calendar';
 import type { Period } from '../types';
+import PeriodTimeline from './PeriodTimeline';
 import styles from './SuggestionCard.module.css';
 
 type Props = {
@@ -8,8 +9,6 @@ type Props = {
 };
 
 type Variant = 'Gold' | 'Silver' | 'Bronze' | 'Other';
-
-const RANK_ICONS = ['🏆', '🥈', '🥉'] as const;
 
 function rankVariant(rank: number): Variant {
   if (rank === 1) return 'Gold';
@@ -30,7 +29,6 @@ function formatRange(start: string, end: string): string {
 
 export default function SuggestionCard({ period, rank }: Props) {
   const variant = rankVariant(rank);
-  const icon = rank <= 3 ? RANK_ICONS[rank - 1] : '';
   const vacDays = period.requiredVacationDays;
 
   return (
@@ -38,10 +36,9 @@ export default function SuggestionCard({ period, rank }: Props) {
 
       <div className={styles.cardHeader}>
         <div className={styles.titleGroup}>
-          {icon
-            ? <span className={styles.rankIcon}>{icon}</span>
-            : <span className={styles.rankNumber}>#{rank}</span>
-          }
+          <span className={`${styles.rankBadge} ${styles[`rankBadge${variant}`]}`}>
+            #{rank}
+          </span>
           <span className={styles.totalDays}>{period.totalDays}</span>
           <span className={styles.totalLabel}>sammenhængende fridage</span>
         </div>
@@ -51,6 +48,13 @@ export default function SuggestionCard({ period, rank }: Props) {
       </div>
 
       <p className={styles.dateRange}>{formatRange(period.start, period.end)}</p>
+
+      <PeriodTimeline
+        start={period.start}
+        end={period.end}
+        vacationDates={period.vacationDates}
+        holidayDates={period.holidayDates}
+      />
 
       <div className={styles.vacationSection}>
         <p className={styles.vacationLabel}>
