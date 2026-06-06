@@ -24,6 +24,7 @@ export default function App() {
     const holidays = [
       ...getDanishHolidays(year),
       ...getDanishHolidays(year + 1),
+      ...getDanishHolidays(year + 2),
     ];
     const cal = buildCalendar(year, holidays.map((h) => h.date));
     setCalendar(cal);
