@@ -12,18 +12,25 @@ type Props = {
 export default function FilterPanel({ year, isActive, onFilter, onClear }: Props) {
   const [from, setFrom] = useState(`${year}-06-01`);
   const [to, setTo] = useState(`${year}-08-31`);
-  const [budget, setBudget] = useState(5);
+  const [budgetStr, setBudgetStr] = useState('5');
 
   useEffect(() => {
     setFrom(`${year}-06-01`);
     setTo(`${year}-08-31`);
   }, [year]);
 
-  const isValid = from.length > 0 && to.length > 0 && from <= to && budget >= 1;
+  const budgetNum = Number(budgetStr);
+  const isValid =
+    from.length > 0 &&
+    to.length > 0 &&
+    from <= to &&
+    budgetStr !== '' &&
+    !isNaN(budgetNum) &&
+    budgetNum >= 1;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (isValid) onFilter({ from, to, budget });
+    if (isValid) onFilter({ from, to, budget: budgetNum });
   }
 
   function planRestOfYear() {
@@ -32,7 +39,7 @@ export default function FilterPanel({ year, isActive, onFilter, onClear }: Props
     const t = `${year}-12-31`;
     setFrom(f);
     setTo(t);
-    onFilter({ from: f, to: t, budget });
+    if (isValid) onFilter({ from: f, to: t, budget: budgetNum });
   }
 
   return (
@@ -51,7 +58,7 @@ export default function FilterPanel({ year, isActive, onFilter, onClear }: Props
               type="date"
               value={from}
               min={`${year}-01-01`}
-              max={`${year}-12-31`}
+              max={`${year + 1}-12-31`}
               onChange={(e) => setFrom(e.target.value)}
               className={styles.input}
             />
@@ -64,7 +71,7 @@ export default function FilterPanel({ year, isActive, onFilter, onClear }: Props
               type="date"
               value={to}
               min={from || `${year}-01-01`}
-              max={`${year}-12-31`}
+              max={`${year + 1}-12-31`}
               onChange={(e) => setTo(e.target.value)}
               className={styles.input}
             />
@@ -78,10 +85,9 @@ export default function FilterPanel({ year, isActive, onFilter, onClear }: Props
               <input
                 id="filter-budget"
                 type="number"
-                min={1}
-                max={30}
-                value={budget}
-                onChange={(e) => setBudget(Math.max(1, Number(e.target.value)))}
+                inputMode="numeric"
+                value={budgetStr}
+                onChange={(e) => setBudgetStr(e.target.value)}
                 className={`${styles.input} ${styles.budgetInput}`}
               />
               <span className={styles.budgetUnit}>dage</span>
