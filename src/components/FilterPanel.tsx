@@ -9,13 +9,18 @@ type Props = {
   onClear: () => void;
 };
 
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 export default function FilterPanel({ year, isActive, onFilter, onClear }: Props) {
-  const [from, setFrom] = useState(`${year}-06-01`);
+  const [from, setFrom] = useState(todayStr);
   const [to, setTo] = useState(`${year}-08-31`);
   const [budgetStr, setBudgetStr] = useState('5');
 
   useEffect(() => {
-    setFrom(`${year}-06-01`);
+    setFrom(todayStr());
     setTo(`${year}-08-31`);
   }, [year]);
 
@@ -57,8 +62,7 @@ export default function FilterPanel({ year, isActive, onFilter, onClear }: Props
               id="filter-from"
               type="date"
               value={from}
-              min={`${year}-01-01`}
-              max={`${year + 1}-12-31`}
+              min={todayStr()}
               onChange={(e) => setFrom(e.target.value)}
               className={styles.input}
             />
@@ -70,8 +74,7 @@ export default function FilterPanel({ year, isActive, onFilter, onClear }: Props
               id="filter-to"
               type="date"
               value={to}
-              min={from || `${year}-01-01`}
-              max={`${year + 1}-12-31`}
+              min={from || todayStr()}
               onChange={(e) => setTo(e.target.value)}
               className={styles.input}
             />
@@ -84,7 +87,7 @@ export default function FilterPanel({ year, isActive, onFilter, onClear }: Props
             <div className={styles.budgetRow}>
               <input
                 id="filter-budget"
-                type="number"
+                type="text"
                 inputMode="numeric"
                 value={budgetStr}
                 onChange={(e) => setBudgetStr(e.target.value)}
