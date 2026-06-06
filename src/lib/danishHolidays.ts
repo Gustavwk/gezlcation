@@ -47,8 +47,10 @@ export function getDanishHolidays(year: number): Holiday[] {
     { date: shift(easter, 39),          localName: 'Kristi Himmelfartsdag', name: 'Ascension Day' },
     { date: shift(easter, 49),          localName: '1. Pinsedag',          name: 'Whit Sunday' },
     { date: shift(easter, 50),          localName: '2. Pinsedag',          name: 'Whit Monday' },
+    { date: new Date(year, 11, 24),    localName: 'Juleaften',            name: 'Christmas Eve' },
     { date: new Date(year, 11, 25),    localName: 'Juledag',              name: 'Christmas Day' },
     { date: new Date(year, 11, 26),    localName: '2. Juledag',           name: "St. Stephen's Day" },
+    { date: new Date(year, 11, 31),    localName: 'Nytårsaften',          name: "New Year's Eve" },
   ];
 
   return entries
