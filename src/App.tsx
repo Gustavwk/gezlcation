@@ -80,7 +80,7 @@ export default function App() {
         {periods.length > 0 && (
           <SuggestionList
             periods={periods}
-            title="Top 3 ferieperioder"
+            title={`Top 3 ferieperioder i ${year}`}
             action={<YearSelect value={year} onChange={setYear} subtle />}
           />
         )}
