@@ -51,7 +51,7 @@ export default function FilterPanel({ year, isActive, onFilter, onClear }: Props
     <div className={styles.panel}>
       <h3 className={styles.heading}>Planlæg din ferie</h3>
       <p className={styles.description}>
-        Få 10+ dages gezlcation ud af 5 feriedage. Vi finder det tidspunkt på året, hvor du får den længste gezlcation — ved at lægge dine feriedage op ad helligdage og weekender.
+        Få 10+ dages ferie ud af 5 feriedage. Gezlcation finder det tidspunkt på året, hvor du får flest sammenhængende fridage — ved at lægge dine feriedage op ad helligdage og weekender.
       </p>
 
       <form onSubmit={handleSubmit} className={styles.form}>
