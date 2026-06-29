@@ -15,4 +15,4 @@ services:
 networks:
   traefik_net:
     external: true
-    name: gezlnomics_default
+    name: gezl_traefik_net
