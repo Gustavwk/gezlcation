@@ -2,13 +2,29 @@ import type { Day, Period, VacationFilter } from '../types';
 
 const MAX_VACATION_DAYS = 20;
 const TOP_N = 3;
+const DAYS_PER_MONTH = 30.4375; // avg calendar month, incl. leap years
+
+/**
+ * How many whole vacation days are available if a vacation starts on `date`,
+ * given the balance today plus everything accrued between now and then.
+ * You can't spend a fraction of a day in this planner, so we floor.
+ */
+export function availableDaysAt(filter: VacationFilter, date: string): number {
+  const months = monthsBetween(filter.asOf, date);
+  const raw = filter.balance + filter.accrualPerMonth * Math.max(0, months);
+  return Math.floor(raw);
+}
+
+function monthsBetween(from: string, to: string): number {
+  const ms = Date.parse(to) - Date.parse(from);
+  return ms / (DAYS_PER_MONTH * 24 * 60 * 60 * 1000);
+}
 
 /**
  * Finds the top 3 periods that include at least one public holiday, sorted by ROI.
  * Pure weekend extensions (no holidays) are intentionally excluded as trivial.
  */
 export function findBestPeriods(days: Day[], filter?: VacationFilter): Period[] {
-  const maxVac = filter?.budget ?? MAX_VACATION_DAYS;
   const startIdx = resolveStart(days, filter?.from);
   const endIdx = resolveEnd(days, filter?.to);
   if (startIdx === -1 || endIdx === -1 || startIdx > endIdx) return [];
@@ -16,6 +32,8 @@ export function findBestPeriods(days: Day[], filter?: VacationFilter): Period[] 
   const best = new Map<number, Period>();
 
   for (let i = startIdx; i <= endIdx; i++) {
+    // Budget grows over time as vacation accrues, so it's resolved per start date.
+    const maxVac = filter ? availableDaysAt(filter, days[i].date) : MAX_VACATION_DAYS;
     let vacationCount = 0;
     let holidayCount = 0;
     for (let j = i; j <= endIdx; j++) {
@@ -50,7 +68,7 @@ export function findBestPeriods(days: Day[], filter?: VacationFilter): Period[] 
 
 /**
  * Finds the single contiguous period that maximises total calendar days
- * while using at most filter.budget vacation days.
+ * while using at most the vacation days available by the time it starts.
  * This is the one answer to "how do I get the longest possible holiday?"
  */
 export function findBestVacation(days: Day[], filter: VacationFilter): Period | null {
@@ -61,6 +79,8 @@ export function findBestVacation(days: Day[], filter: VacationFilter): Period | 
   let best: Period | null = null;
 
   for (let i = startIdx; i <= endIdx; i++) {
+    // Budget is what you'll have accrued by the day this vacation starts.
+    const budget = availableDaysAt(filter, days[i].date);
     let vacationCount = 0;
     let lastJ = -1;
     let lastVacCount = 0;
@@ -68,7 +88,7 @@ export function findBestVacation(days: Day[], filter: VacationFilter): Period | 
     for (let j = i; j <= endIdx; j++) {
       const day = days[j];
       if (!day.isWeekend && !day.isHoliday) vacationCount++;
-      if (vacationCount > filter.budget) break;
+      if (vacationCount > budget) break;
       lastJ = j;
       lastVacCount = vacationCount;
     }

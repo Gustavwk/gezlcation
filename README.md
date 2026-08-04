@@ -7,7 +7,7 @@ Planlæg dine danske feriedage optimalt ved at kombinere offentlige helligdage o
 Gezlcation beregner lokalt hvilke perioder der giver mest fri for færrest feriedage — baseret på de officielle danske helligdage.
 
 - **Top 3 ferieperioder** — de tre perioder med bedst ROI for hele året
-- **Din bedste ferie** — giv en periode og et feriebudget, få ét optimalt svar
+- **Din bedste ferie** — angiv din feriesaldo og optjening (2,08 dage/måned + evt. 0,5 dage/måned for 6. ferieuge), få ét optimalt svar der tager højde for hvad du har optjent til den tid
 - **Årsoverskridelse** — finder perioder der krydser jul/nytår automatisk
 - **Ingen ekstern API** — alle helligdage beregnes lokalt med Meeus/Jones/Butcher-algoritmen
 

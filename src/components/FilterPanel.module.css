@@ -56,6 +56,39 @@
   color: #4a6a8c;
 }
 
+.accrual {
+  @apply flex flex-col gap-2 border-2 p-3;
+  border-color: var(--color-haze);
+}
+
+.accrual .label {
+  @apply mb-1 px-1;
+}
+
+.checkbox {
+  @apply inline-flex self-start items-center gap-2 text-sm cursor-pointer;
+  color: #1a3a5c;
+}
+
+.checkbox input {
+  @apply w-4 h-4 cursor-pointer;
+  accent-color: #4a6a8c;
+}
+
+.checkbox em {
+  @apply not-italic;
+  color: #4a6a8c;
+}
+
+.projection {
+  @apply text-sm;
+  color: #4a6a8c;
+}
+
+.projection strong {
+  color: #1a3a5c;
+}
+
 .actions {
   @apply flex gap-3 items-center flex-wrap;
 }
