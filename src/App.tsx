@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Day, Period, VacationFilter } from './types';
 import { getDanishHolidays } from './lib/danishHolidays';
 import { buildCalendar } from './lib/calendar';
-import { findBestPeriods, findBestVacation } from './lib/optimizer';
+import { availableDaysAt, findBestPeriods, findBestVacation } from './lib/optimizer';
 import YearSelect from './components/YearSelect';
 import FilterPanel from './components/FilterPanel';
 import SuggestionList from './components/SuggestionList';
@@ -64,7 +64,7 @@ export default function App() {
           <SuggestionList
             periods={[bestVacation]}
             title="Din bedste ferie"
-            subtitle={`${bestVacation.totalDays} sammenhængende fridage · ${bestVacation.requiredVacationDays} af ${filter.budget} feriedage brugt`}
+            subtitle={`${bestVacation.totalDays} sammenhængende fridage · ${bestVacation.requiredVacationDays} af ${availableDaysAt(filter, bestVacation.start)} optjente feriedage brugt`}
           />
           </div>
         )}
